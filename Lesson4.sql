@@ -43,6 +43,20 @@ GROUP BY film_id
 ORDER BY film_id;
 
 
+--HAVING
+--Hãy cho biết khách hàng nào đã trả tổng số tiền >100$
+SELECT * FROM payment
+SELECT customer_id,
+SUM (amount) AS total_amount
+FROM payment
+GROUP BY customer_id
+HAVING SUM (amount) >100
+--HAVING:lọc trên trường infor TỔNG HỢP: 
+--WHERE sd lọc trên trường có sẵn
+
+
+
+
 
 
 
