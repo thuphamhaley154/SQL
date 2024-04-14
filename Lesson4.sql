@@ -12,11 +12,37 @@ AND amount >0;
 
 --GROUP BY
 --hãy cho biết số lượng đơn hàng của mỗi kh là bn?
-SELECT customer_id,
-SUM (amount) AS total_amount
+SELECT customer_id, staff_id,
+SUM (amount) AS total_amount,
+AVG (amount) AS average_amount,
+MAX (amount) AS max_amount,
+MIN (amount) AS min_amount,
+COUNT (*) AS count_rental
 FROM payment
-GROUP BY customer_id;
---
+GROUP BY customer_id, staff_id
+ORDER BY customer_id
+--cú pháp: tính/ tổng hợp dựa trên colume1 or colume 2 (NOte:khi muốn gom nhóm theo clue nào thì chỉ đc SELECT theo colume đó )
+/*SELECT colume1, colume2 
+SUM()
+AVG ()
+MIN ()
+MAX ()
+FROM table_mn
+GROUP BY colume 1, colume 2*/
+
+SELECT * FROM payment;
+
+--GROUP BY challenge: max, min, sum, avg  chi phí thay thế(của 1 tài sản là CP để mua mới 1 ts với gtri tương đương ts đó)
+SELECT film_id,
+SUM (replacement_cost) AS total_cost,
+ROUND (AVG (replacement_cost),2) AS avg_cost, --2 số thâp phân
+MAX (replacement_cost) AS max_cost,
+MIN (replacement_cost) AS min_cost
+FROM film
+GROUP BY film_id
+ORDER BY film_id;
+
+
 
 
 
