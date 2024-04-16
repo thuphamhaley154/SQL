@@ -7,7 +7,7 @@ FROM STATION;
 /*Ex3: Samantha was tasked with calculating the average monthly salaries for all employees in the EMPLOYEES table,
 but did not realize her keyboard's  key was broken until after completing the calculation. She wants your help finding 
 the difference between her miscalculation (using salaries with any zeros removed), and the actual average salary.
-Write a query calculating the amount of error , round it up to the next integer.*/
+Write a query calculating the amount of error, round it up to the next integer.*/
 
 
 /*EX4:[Alibaba SQL Interview Question] You're trying to find the mean number of items per order on Alibaba, 
@@ -39,13 +39,35 @@ ORDER BY candidate_id ASC;
 /*Ex6: [Facebook SQL Interview Question] Given a table of Facebook posts, for each user who posted at least twice in 2021, 
 write a query to find the number of days between each user’s first post of the year and last post of the year in the year 2021. 
 Output the user and number of the days between each user's first and last post*/
+/*output (gốc/phái sinh phải tính ra): the user, days_between =MAX(day)-MIN(day..)
+number of the days between each user's first and last post.
++ input: 
++ điều kiện lọc theo trường nào (gốc hay phái sinh)*/
 
+SELECT user_id,
+DATE (MAX(post_date))- DATE(MIN(post_date)) AS  days_between --hamf DATE để có cả giờ 
+FROM posts
+WHERE post_date>='2021-01-01' AND post_date<'2022-01-01'
+GROUP BY user_id
+HAVING COUNT (post_id)>=2
 
 
 /*EX7: Cards Issued Difference [JPMorgan Chase SQL Interview Question] Your team at JPMorgan Chase is preparing to launch a new credit card, 
 and to gain some insights, you're analyzing how many credit cards were issued each month.
 Write a query that outputs the name of each credit card and the difference in the number of issued cards 
 between the month with the highest issuance cards and the lowest issuance. Arrange the results based on the largest disparity*/
+/*output (gốc/phái sinh phải tính ra): card_name, difference
++ điều kiện lọc theo trường nào (gốc hay phái sinh)*/
+SELECT card_name,
+Max(issued_amount)- Min(issued_amount) AS difference
+FROM monthly_cards_issued
+GROUP BY card_name
+ORDER BY difference DESC
+
+/*EX8: Pharmacy Analytics (Part 2) [CVS Health SQL Interview Question]Write a query to identify the manufacturers associated with 
+the drugs that resulted in losses for CVS Health and calculate the total amount of losses incurred. Output the manufacturer's name, 
+the number of drugs associated with losses, and the total losses in absolute value. Display the results sorted in descending order withthe highest losses displayed at the top.
+
 
 
 
