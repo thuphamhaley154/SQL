@@ -58,10 +58,10 @@ HAVING SUM (amount) >10
 
 
 -- HAVING challenge: 2020, date 28,29,30/4 có doanh thu cao - giảm dần 
---> AVG khoản payment(amount);NHÓM THEO-GROUP BY khách hàng và ngày payment-chỉ các KH nhiều hơn 1 khoản payment
+--> AVG khoản payment(amount);NHÓM THEO-GROUP BY khách hàng và ngày payment-chỉ xem xét những ngày mà KH có nhiều hơn 1 khoản payment
 SELECT customer_id, DATE (payment_date),
 AVG (amount) AS avg_amount,
-COUNT (payment_id)
+COUNT (payment_id)--"chỉ xem xét những ngày mà KH có nhiều hơn 1 khoản payment"-->lq đến COUNT xem mỗi KH có bn khoản payment 'payment_id'
 FROM payment
 WHERE DATE (payment_date) IN ('2020-04-28', '2020-04-29', '2020-04-30') --hàm DATE để including GIỜ
 GROUP BY customer_id, DATE (payment_date)
