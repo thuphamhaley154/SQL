@@ -66,7 +66,20 @@ ORDER BY difference DESC
 
 /*EX8: Pharmacy Analytics (Part 2) [CVS Health SQL Interview Question]Write a query to identify the manufacturers associated with 
 the drugs that resulted in losses for CVS Health and calculate the total amount of losses incurred. Output the manufacturer's name, 
-the number of drugs associated with losses, and the total losses in absolute value. Display the results sorted in descending order withthe highest losses displayed at the top.
+the number of drugs associated with losses, and the total losses in absolute value. Display the results sorted in descending order with
+the highest losses displayed at the top.*/
+/*output (gốc/phái sinh phải tính ra):manufacturer,drug_count,total_loss
++ điều kiện lọc theo trường nào (gốc hay phái sinh): total_sales<cogs*/
+
+SELECT manufacturer,
+COUNT (drug) AS drug_count,
+ABS(SUM(cogs - total_sales)) AS total_loss
+FROM pharmacy_sales
+WHERE total_sales <cogs
+GROUP BY manufacturer
+ORDER BY total_loss DESC 
+
+
 
 
 
