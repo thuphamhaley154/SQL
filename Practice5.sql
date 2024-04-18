@@ -79,7 +79,60 @@ WHERE total_sales <cogs
 GROUP BY manufacturer
 ORDER BY total_loss DESC 
 
+/*EX9: Not Boring Movies: Write a solution to report the movies with an odd-numbered ID and a description that is not "boring".
+Return the result table ordered by rating in descending order*/
+/*output (gốc/phái sinh): odd-numbered ID, a description that is not "boring"
++ điều kiện lọc theo trường nào (gốc hay phái sinh) */
 
+SELECT id, movie, description, rating
+FROM Cinema
+WHERE ID%2=1
+AND description <> 'boring'
+ORDER BY rating DESC
+
+/*EX10: Write a solution to calculate the number of unique subjects each teacher teaches in the university.
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| teacher_id  | int  |
+| subject_id  | int  |
+| dept_id     | int  |
++-------------+------+Each row in this table indicates that the teacher with teacher_id teaches the subject subject_id in the department dept_id*/
+/*output (gốc/phái sinh): teacher_id, cnt
++ điều kiện lọc theo trường nào (gốc hay phái sinh) */
+SELECT teacher_id,
+COUNT (DISTINCT subject_id) AS cnt
+FROM Teacher
+GROUP BY teacher_id;
+
+/*EX11: Write a solution that will, for each user, return the number of followers. Return the result table ordered by user_id in ascending order.
+| Column Name | Type |
++-------------+------+
+| user_id     | int  |
+| follower_id | int  |
++-------------+------+(user_id, follower_id) is the primary key (combination of columns with unique values) for this table.
+This table contains the IDs of a user and a follower in a social media app where the follower follows the user*/
+/*output (gốc/phái sinh):  user_id , cnt
++ điều kiện lọc theo trường nào (gốc hay phái sinh) */
+SELECT  user_id,  
+COUNT (follower_id) AS followers_count
+FROM Followers
+GROUP BY user_id 
+ORDER BY  user_id  ASC
+
+/*EX12: Write a solution to find all the classes that have at least five students.
+| Column Name | Type    |
++-------------+---------+
+| student     | varchar |
+| class       | varchar |
++-------------+---------+(student, class) is the primary key (combination of columns with unique values) for this table.
+Each row of this table indicates the name of a student and the class in which they are enrolled*/
+/*output (gốc/phái sinh):  class
++ điều kiện lọc theo trường nào (gốc hay phái sinh) */
+SELECT class FROM Courses
+GROUP BY class --nhóm lớp để đếm số hs mỗi lớp đã--> đến đếm số hs mỗi lớp 
+HAVING COUNT (student)>=5
+ 
 
 
 
