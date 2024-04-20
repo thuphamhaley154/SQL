@@ -8,7 +8,8 @@ FROM STATION;
 but did not realize her keyboard's  key was broken until after completing the calculation. She wants your help finding 
 the difference between her miscalculation (using salaries with any zeros removed), and the actual average salary.
 Write a query calculating the amount of error, round it up to the next integer.*/
-
+SELECT  CEILING(AVG(Salary) - AVG(REPLACE (Salary, '0', '')) )
+FROM EMPLOYEES ;
 
 /*EX4:[Alibaba SQL Interview Question] You're trying to find the mean number of items per order on Alibaba, 
 rounded to 1 decimal place using tables which includes information on the count of items in each order (item_count table) 
