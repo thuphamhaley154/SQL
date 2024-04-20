@@ -108,7 +108,7 @@ FROM payment
 GROUP BY customer_id, EXTRACT (week FROM payment_date)
 ORDER BY SUM (amount)  DESC
 
---TO_CHAR: chuyển định dạng mà mk muốn vd:ngày/thg/năm -->...
+--TO_CHAR: chuyển định dạng mà mk muốn vd:ngày/thg/năm -->...năm/thg/ngày
 SELECT payment_date,
 EXTRACT (day FROM payment_date),
 --TO_CHAR (payment_date, 'dd-mm-yyyy hh-mm-ss') 
