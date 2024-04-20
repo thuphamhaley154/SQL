@@ -59,7 +59,10 @@ WHERE LENGTH (content)>15 ;
 
 /*EX7: The table shows the user activities for a social media website. Note that each session belongs to exactly one user. Write a solution to find the daily
 active user count for a period of 30 days ending 2019-07-27 inclusively. A user was active on someday if they made at least one activity on that day*/
-
+SELECT activity_date AS day, COUNT(DISTINCT user_id) AS active_users 
+FROM Activity
+WHERE activity_date between '2019-06-28' and '2019-07-27' --WHERE DATEDIFF("2019-07-27", activity_date) < 30 
+GROUP BY activity_date;
 
 /*EX8: You have been asked to find the number of employees hired between the months of January and July in the year 2022 inclusive.
 Your output should contain the number of employees hired in this given time frame.*/
