@@ -88,6 +88,10 @@ END IS NOT NULL
 
 
 
+-- PIVOT BY CASE-WHEN (PIVOT TABLE: trải dài các data nhiều sự chi tiết.)
+
+
+
 
 
 
