@@ -119,7 +119,6 @@ END) AS low
 FROM payment
 GROUP BY customer_id
 ORDER BY customer_id
-
 /*CHALLENGE: Thống kê có bn bộ phim đc đgia là R, PG, PG-13 ở các thể loại phim long - medium - short
 -bảng thống kê theo chiều Horizontal : category, r, pg, pg-13 (category là chuỗi có sẵn trong table nên ploai theo CASE-WHEN)
 +long: length>120
@@ -143,7 +142,41 @@ END) AS pg_13
 FROM film
 GROUP BY category
 
---
+---- COALESCE: xử lý các thông tin bị NULL ở trường tt nào đó trong table (update các tt Null thành các gtri mới)
+SELECT 
+scheduled_arrival,
+actual_arrival,
+COALESCE (actual_arrival, '2020-01-01'), --C1: thay thế các gtri NULL thành gtri mới
+COALESCE (actual_arrival,scheduled_arrival), --C2:tt Null bằng gtri tương ứng có sẵn trong bảng
+COALESCE(actual_arrival-scheduled_arrival,'00:00')--Note: dạng HIỆU này là interval, nên số liệu đằng sau cũng cần định dạng như thế:00:00 
+FROM flights
+
+--CAST: Thay thế 1 dạng datatype thành 1 dạng type khác
+SELECT 
+scheduled_arrival,
+actual_arrival,
+COALESCE (actual_arrival, '2020-01-01'), 
+COALESCE (actual_arrival,scheduled_arrival), 
+COALESCE(CAST(actual_arrival-scheduled_arrival AS VARCHAR),'Not arrived') 
+FROM flights
+/*Chuyển đổi datatype hay dùng trong thực tế:
++string (chuỗi)
++ number 
++ datetime*/
+SELECT *,
+--string => number (string phải chứa 'số' ko đc chứa 'abc..')
+CAST (ticket_no AS bigint), --big integer 
+--CAST (fare_conditions AS bigint) -- KO ĐC vì fare_conditions chứa abc nên ko thể
+--number =>string
+CAST (amount AS VARCHAR)
+FROM bookings.ticket_flights 
+--datetime==>string
+SELECT 
+CAST(scheduled_departure AS VARCHAR) -->timestamp->character 
+FROM flights
+
+
+
 
 
 
