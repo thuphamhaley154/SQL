@@ -88,8 +88,62 @@ END IS NOT NULL
 
 
 
--- PIVOT BY CASE-WHEN (PIVOT TABLE: trải dài các data nhiều sự chi tiết.)
+-- PIVOT BY CASE-WHEN (PIVOT TABLE: trải dài các datas sang nhiều sự dễ theo dõi,vd: như dọc sang ngang,.. )
+/*Tính tổng số tiền theo từng loại hóa đơn high-medium-low của từng KH (có chữ từng KH, từng loại ~ GROUP BY)
+- high: amount >10
+- medium: 5 <=amount <=10
+- low: amount <5 */
+SELECT customer_id,
+CASE
+	WHEN amount>10 THEN 'high'
+	WHEN amount BETWEEN 5 AND 10 THEN 'medium'
+	WHEN amount<5 THEN 'low'
+END category,
+SUM (amount) AS total_amount
+FROM payment
+GROUP BY customer_id, category --có SUM thì phải GROUP BY
+--Cách 2: PIVOT theo CASE-WHEN
+SELECT customer_id,
+SUM(CASE
+	WHEN amount>10 THEN amount
+	ELSE 0
+END) AS high,
+SUM(CASE
+	WHEN amount BETWEEN 5 AND 10 THEN amount
+	ELSE 0
+END) AS medium,
+SUM(CASE
+	WHEN amount<5 THEN amount
+	ELSE 0
+END) AS low
+FROM payment
+GROUP BY customer_id
+ORDER BY customer_id
 
+/*CHALLENGE: Thống kê có bn bộ phim đc đgia là R, PG, PG-13 ở các thể loại phim long - medium - short
+-bảng thống kê theo chiều Horizontal : category, r, pg, pg-13 (category là chuỗi có sẵn trong table nên ploai theo CASE-WHEN)
++long: length>120
++ medium: 60 <=length<=120
++ short : length>120*/
+SELECT 
+CASE
+	WHEN length>120 THEN 'long'
+	WHEN length BETWEEN 60 AND 120  THEN 'medium'
+	ELSE 'short'
+END AS category,
+SUM(CASE
+	WHEN rating= 'R' THEN 1 ELSE 0
+END) AS r,
+SUM(CASE
+	WHEN rating= 'PG' THEN 1 ELSE 0
+END) AS pg,
+SUM(CASE
+	WHEN rating= 'PG-13' THEN 1 ELSE 0
+END) AS pg_13
+FROM film
+GROUP BY category
+
+--
 
 
 
