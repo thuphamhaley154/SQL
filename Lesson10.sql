@@ -102,6 +102,54 @@ GROUP BY a.seat_no
 ORDER BY AVG(b.amount) DESC
 
 
+--JOIN MULTIPLE TABLE(ko phân biệt table bào gốc hay tham chiếu)
+--liệt kê 5 trường tt: số vé, tên KH, giá vé, giờ bay, giờ kết thúc
+SELECT a.ticket_no, a.passenger_name, b.amount,
+c.scheduled_departure, c.scheduled_arrival
+FROM bookings.tickets AS a
+INNER JOIN bookings.ticket_flights AS b ON a.ticket_no=b.ticket_no
+INNER JOIN bookings.flights AS c ON b.flight_id=c.flight_id
+/*CHALLENGE: Những KH nào đến từ Brazil? -query để lấy first_name, last_name, email, quốc gia từ all KH đén từ Brazil*/
+SELECT a.first_name, a.last_name, a.email, d.country
+FROM public.customer AS a
+INNER JOIN public.address AS b ON b.address_id=a.address_id
+INNER JOIN public.city AS c ON c.city_id=b.city_id
+INNER JOIN public.country AS d ON c.country_id=d.country_id
+WHERE d.country = 'Brazil'
+
+--SELF JOIN: join 2 tables giống nhau vào 1
+SELECT emp.employee_id, emp.name, emp.manager_id, mng.name AS mng_name
+FROM employee AS emp
+LEFT JOIN employee AS mng
+ON emp.manager_id=mng.employee_id
+--CHALLEGE: Tìm films có cùng thời lượng phim 
+--output: table1, table2, length
+SELECT F1.title as title1, F2.title as titile2, F1.length
+FROM film AS F1
+JOIN film AS F2
+ON F1.length=F2.length
+WHERE F1.title<>F2.title
+
+
+--UNION: ghép 2 hay nhiều table theo chiều dọc vertical 
+/*Note: - số lượng colume ở 2 tables phải bằng nhau
+- kiểu dữ liệu trong cùng 1 cột phải giống nhau
+- UNION loại bỏ 'Trùng' nhau, UNION ALL thì không */
+SELECT col1, col2, ... coln
+FROM table1
+UNION/UNION ALL
+SELECT col1, col2, ... coln
+FROM table2
+UNION/UNION ALL
+SELECT col1, col2, ... coln 
+FROM table3
+--VD: 
+SELECT first_name, 'actor' AS source FROM actor
+UNION 
+SELECT first_name, 'customer' AS source FROM customer 
+UNION 
+SELECT first_name, 'staff' AS source FROM staff
+ORDER BY first_name
 
 
 
