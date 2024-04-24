@@ -18,3 +18,23 @@ LEFT JOIN texts AS b
   ON a.email_id = b.email_id
   AND b.signup_action = 'Confirmed';
 
+
+/*EX3: Write a query to obtain a breakdown of the time spent sending vs. opening snaps as a percentage of total time spent on these activities grouped 
+by age group. Round the percentage to 2 decimal places in the output. 
+https://datalemur.com/questions/time-spent-snaps */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
