@@ -23,6 +23,18 @@ LEFT JOIN texts AS b
 by age group. Round the percentage to 2 decimal places in the output. 
 https://datalemur.com/questions/time-spent-snaps */
 
+select age_bucket,
+round((sum(case when activity_type = 'send' then time_spent else 0 end) / sum(time_spent)) * 100 , 2) as send_perc,
+round((sum(case when activity_type = 'open' then time_spent else 0 end) / sum(time_spent)) * 100 , 2) as open_perc
+from (select a.activity_type,a.time_spent,b.age_bucket
+from activities as a  
+left join age_breakdown as b  
+on a.user_id = b.user_id
+where a.activity_type in ('send','open') ) AS age_group 
+group by age_bucket;
+
+/*EX4: Write a query that effectively identifies the company ID of such Supercloud customers. As of 5 Dec 2022, data in the customer_contracts and products tables were updated.
+https://datalemur.com/questions/supercloud-customer */
 
 
 
