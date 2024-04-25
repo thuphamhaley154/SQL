@@ -35,7 +35,59 @@ group by age_bucket;
 
 /*EX4: Write a query that effectively identifies the company ID of such Supercloud customers. As of 5 Dec 2022, data in the customer_contracts and products tables were updated.
 https://datalemur.com/questions/supercloud-customer */
+SELECT customer_id
+FROM (SELECT a.customer_id,
+COUNT(DISTINCT b.product_category) AS unique_count
+FROM customer_contracts AS a 
+LEFT JOIN products AS b 
+ON a.product_id = b.product_id
+GROUP BY a.customer_id) AS supercloud
+WHERE unique_count = (SELECT COUNT(DISTINCT product_category) FROM products)
+ORDER BY customer_id;
 
+/*EX5: For this problem, we will consider a manager an employee who has at least 1 other employee reporting to them.Write a solution to report the ids and the names 
+of all managers, the number of employees who report directly to them, and the average age of the reports rounded to the nearest integer
+https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/description/?envType=study-plan-v2&envId=top-sql-50 */
+select a.employee_id, name, reports_count, average_age
+from (select reports_to as employee_id, 
+count(distinct employee_id) as reports_count,
+round(avg(age)) as average_age
+from Employees
+group by reports_to
+having reports_to is not null) a
+left join Employees b 
+on a.employee_id = b.employee_id
+order by a.employee_id;
+
+/*EX6: Write a solution to get the names of products that have at least 100 units ordered in February 2020 and their amount.
+https://leetcode.com/problems/list-the-products-ordered-in-a-period/description/?envType=study-plan-v2&envId=top-sql-50 */
+
+select a.product_name, unit
+from products as a
+join (select product_id, order_date, sum(unit) as unit
+  from orders 
+  where order_date between '2020-02-01' and '2020-02-29'
+  group by product_id) as b
+on a.product_id = b.product_id
+where unit >= 100
+group by a.product_name;
+
+c2: select a.product_name, sum(unit) as unit
+from Products a
+left join Orders b
+on a.product_id = b.product_id
+where b.order_date between '2020-02-01' and '2020-02-29'
+group by a.product_id
+having sum(unit) >= 100
+
+/*EX7: Write a query to return the IDs of the Facebook pages that have zero likes. The output should be sorted in ascending order based on the page IDs.
+https://datalemur.com/questions/sql-page-with-no-likes */
+select a.page_id
+from pages as a 
+left join page_likes b
+on a.page_id = b.page_id
+where b.liked_date IS NULL 
+ORDER BY a.page_id ASC  
 
 
 
