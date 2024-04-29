@@ -66,3 +66,38 @@ INNER JOIN customer ON new_table.customer_id=customer.customer_id
 WHERE so_luong>30
 
 
+--SUBQUERIES IN SELECT  
+--Add 1 trường thông tin nữa tên là 'cl1' và gtrị của cl1 đó tại all các bản ghi là 4 
+SELECT * , 4 AS cl1 
+FROM payment;
+--add trường thông tin AVG(amount) 
+SELECT *,
+(select avg(amount) from payment)
+FROM payment 
+--Tính chênh lệch giữ avg và số tiền của mỗi hóa đơn
+SELECT *,
+(select avg(amount) from payment), --,miễn là kq trả ra trong câu lệnh truy vấn con chỉ là 1 gtri thôi
+(select avg(amount) from payment) - amount 
+FROM payment
+
+--CHALLENGE: tìm chênh lệch giữa số tiền từng hóa đơn so với số tiền thanh toán lớn nhất mà ct nhận đc
+SELECT payment_id, amount,
+(SELECT MAX(amount) FROM payment) AS max_amount,
+(SELECT MAX(amount) FROM payment) - amount AS difference 
+FROM payment 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
