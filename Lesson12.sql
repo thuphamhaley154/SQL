@@ -87,6 +87,49 @@ SELECT payment_id, amount,
 FROM payment 
 
 
+--CORRELATED SUBQUERIES IN WHERE (truy vấn con tương quan)
+--lấy ra thông tin KH từ table: customer có tổng hóa đơn >100$
+--C1: 
+SELECT a.customer_id,
+SUM(b.amount) AS total_amount 
+FROM customer AS a
+JOIN payment AS b
+ON a.customer_id=b.customer_id
+GROUP BY a.customer_id 
+HAVING SUM(b.amount)>100
+--C2: sd SUBQUERY: b1: list ds KH có  tổng amount>100 ở bảng payment, b2: tìm những KH tương ứng ở bảng customer
+SELECT customer_id,
+SUM(amount)
+FROM payment
+GROUP BY customer_id
+HAVING SUM(amount)>100;
+
+SELECT * 
+FROM customer 
+WHERE customer_id IN (SELECT customer_id
+FROM payment
+GROUP BY customer_id
+HAVING SUM(amount)>100)
+-- or có thể dùng '=' thay cho 'IN'
+SELECT * 
+FROM customer as a
+WHERE customer_id = (SELECT customer_id
+FROM payment as b 
+WHERE a.customer_id= b.customer_id
+GROUP BY customer_id
+HAVING SUM(amount)>100)
+
+--NOTE: CÓ THỂ THAY 'customer_id =' BẰNG lệnh 'EXISTS' - CHỈ CÓ sd Ở CORRELATED SUBQUERY  
+SELECT * 
+FROM customer as a
+WHERE EXISTS(SELECT customer_id
+FROM payment as b 
+WHERE a.customer_id= b.customer_id
+GROUP BY customer_id
+HAVING SUM(amount)>100)
+
+
+
 
 
 
