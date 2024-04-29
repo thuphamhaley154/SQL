@@ -41,6 +41,28 @@ SELECT customer_id FROM public.payment
 GROUP BY customer_id  --GROUP BY theo từng KH
 HAVING SUM(amount) >100 
 
-
+--SUBQUERIES IN FROM 
+-- Tìm những KH có nhiều hơn 30 hóa đơn 
+--C1:
+SELECT customer_id,
+COUNT (payment_id) as so_luong --đếm số lượng hóa đơn 
+FROM payment
+GROUP BY customer_id
+HAVING COUNT (payment_id)>30
+--C2: 
+select * from
+(SELECT customer_id,
+COUNT (payment_id) as so_luong 
+FROM payment
+GROUP BY customer_id) AS new_table 
+WHERE so_luong>30
+--Tìm thêm tên của các KH
+select customer.first_name, new_table.so_luong from
+(SELECT customer_id,
+COUNT (payment_id) as so_luong 
+FROM payment
+GROUP BY customer_id) AS new_table 
+INNER JOIN customer ON new_table.customer_id=customer.customer_id
+WHERE so_luong>30
 
 
