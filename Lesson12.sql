@@ -12,3 +12,35 @@ WHERE first_name = 'ADAM';
 SELECT * FROM payment 
 WHERE customer_id IN (SELECT customer_id FROM customer -- Nếu SUBquery cần 1 kq nhất định, dùng dấu =; nếu 1 list thì dùng 'IN'
 WHERE first_name = 'ADAM')
+
+--CHALLENGE 1: Tìm những phim có thời lượng > thời lượng Trung bình các BỘ phim
+SELECT film_id, title
+FROM film 
+WHERE length > (SELECT AVG(length) FROM film)
+--CHALLENGE 2: Tìm những phim có ở STORE 2 ít nhất 3 lần. Output: film_id, title 
+SELECT film_id, title 
+FROM film 
+WHERE film_id IN (SELECT film_id FROM public.inventory
+WHERE store_id = 2 
+GROUP BY film_id   
+HAVING COUNT (*) >=3)
+
+SELECT film_id FROM public.inventory
+WHERE store_id = 2 
+GROUP BY film_id  --ít nhất 3 lần, lọc theo đk tổng hợp =>HAVING 
+HAVING COUNT (*) >=3
+
+--CHALLENGE 3: Tìm những KH đến từ Califorlia và đã chi tiêu nhiều hơn 100$. 
+SELECT customer_id, first_name, last_name, email
+FROM customer 
+WHERE customer_id IN (SELECT customer_id FROM public.payment
+GROUP BY customer_id  --GROUP BY theo từng KH
+HAVING SUM(amount) >100 )
+--tổng chi tiêu chưa có=>tìm , tổng chi tiêu=>lọc theo đk tổng hợp HAVING 
+SELECT customer_id FROM public.payment
+GROUP BY customer_id  --GROUP BY theo từng KH
+HAVING SUM(amount) >100 
+
+
+
+
