@@ -87,6 +87,10 @@ SELECT payment_id, amount,
 FROM payment 
 
 
+/*CORRELATED SUBQUERIES in WHERE/ in SELECT
++ in WHERE thường dùng cho các điều kiện LỌC 
++ in SELECT: ở phần hiển thị  */
+  
 --CORRELATED SUBQUERIES IN WHERE (truy vấn con tương quan)
 --lấy ra thông tin KH từ table: customer có tổng hóa đơn >100$
 --C1: 
@@ -127,6 +131,95 @@ FROM payment as b
 WHERE a.customer_id= b.customer_id
 GROUP BY customer_id
 HAVING SUM(amount)>100)
+
+--CORRELATED SUBQUERIES IN SELECT 
+--mã KH, tên KH, mã thanh toán, số tiền lớn nhất của từng KH
+
+--SỐ tiền lớn nhất của từng KH=> gom nhóm theo KH, ko phải mã thanh toán  
+SELECT customer_id FROM payment
+MAX(amount)
+GROUP BY customer_id;
+--=>
+SELECT a.customer_id, 
+a.first_name || a.last_name,
+b.payment_id,
+(SELECT  MAX(amount) FROM payment -- xóa customer_id vì chỉ đc hiển thi 1 cột MAX thôi 
+WHERE customer_id=a.customer_id --phải thêm lệnh WHERE nữa để SQL phân biệt MAX tương ứng với customer_id nào. 
+GROUP BY customer_id)
+FROM customer AS a
+JOIN payment AS b 
+ON a.customer_id=b.customer_id
+GROUP BY  (a.customer_id, 
+a.first_name || a.last_name,
+b.payment_id)
+ORDER BY customer_id;
+--> KẾT QUẢ MAX phải CHỈ 1 GIÁ TRỊ lơn nhất cho từng KH 
+
+--CHALLENGE 1: Liệt kê các khoản thanh toán với tổng số hóa đơn và tổng số tiền mỗi KH phải trả (COUNT) 
+--payment_id, payment_date, 
+--output: Tổng số hóa đơn theo từng KH 
+SELECT customer_id,
+COUNT (*) AS count_payment, --theo từng KH 
+SUM (amount) as sum_amount  --tổng số tiền mỗi KH
+FROM payment
+GROUP BY customer_id --theo từng KH 
+--C1: JOIN
+SELECT a.*, b.sum_amount, b.count_payment
+FROM payment AS a
+JOIN (SELECT customer_id,
+COUNT (*) AS count_payment, 
+SUM(amount) as sum_amount  
+FROM payment
+GROUP BY customer_id) b 
+ON a.customer_id=b.customer_id
+--C2: 
+SELECT a.*,
+(SELECT 
+COUNT (*)
+FROM payment b
+WHERE a.customer_id=b.customer_id
+GROUP BY customer_id) AS count_payment, --do output chỉ ra 1 trường thôi, xóa các thông tin ko cần thiết 
+(SELECT 
+SUM(amount)
+FROM payment b
+WHERE a.customer_id=b.customer_id
+GROUP BY customer_id) AS sum_amount
+FROM payment a 
+
+--CHALLENGE 2: lấy ds các film có chi phí thay thế lớn nhất trog mỗi loại rating. 
+--Ngoài film_id, title, rating, chi phí thay thế(replacement_cost) cần thêm chi phí thay thế trung bình mỗi loại rating đó. 
+SELECT film_id, title, rating, replacement_cost,
+(SELECT AVG(replacement_cost) 
+ FROM film a
+ WHERE a.rating = b.rating 
+GROUP BY rating) --chi phí thay thế trung bình mỗi loại rating
+FROM film b 
+--chỉ lấy ds các phim có chi phí thay thế lớn nhất (=>LỌC WHERE) trong từng loại rating=> gtri LN của replacement_cost trong rating
+SELECT rating, MAX (replacement_cost)
+FROM film
+GROUP BY rating 
+--> KQ
+SELECT film_id, title, rating, replacement_cost,
+(SELECT AVG(replacement_cost) 
+ FROM film a
+ WHERE a.rating = b.rating 
+GROUP BY rating) 
+FROM film b 
+WHERE replacement_cost = (SELECT MAX (replacement_cost)
+FROM film c
+						  WHERE c.rating=b.rating 
+GROUP BY rating)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
