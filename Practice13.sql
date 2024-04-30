@@ -51,6 +51,80 @@ ORDER BY a.page_id ASC
 --EX5: https://datalemur.com/questions/user-retention
 
 
+--EX6: https://leetcode.com/problems/monthly-transactions-i/?envType=study-plan-v2&envId=top-sql-50
+select country,
+left(trans_date, 7) as month,
+count(1) as trans_count,
+sum(case when state = 'approved' then 1 else 0 end) as approved_count,
+sum(amount) as trans_total_amount, 
+sum(case when state = 'approved' then amount else 0 end) as approved_total_amount
+from Transactions
+group by country, left(trans_date, 7)
+
+--EX7: https://leetcode.com/problems/product-sales-analysis-iii/description/?envType=study-plan-v2&envId=top-sql-50 
+WITH RankedSales AS (
+    SELECT a.product_id, a.year AS first_year, a.quantity, a.price,
+    RANK() OVER (PARTITION BY a.product_id ORDER BY a.year) AS row_num
+    FROM Sales a)
+SELECT b.product_id, b.first_year, b.quantity, b.price
+FROM RankedSales b
+WHERE b.row_num = 1;
+
+--EX8: https://leetcode.com/problems/customers-who-bought-all-products/description/?envType=study-plan-v2&envId=top-sql-50 
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM Product);
+
+--EX9: https://leetcode.com/problems/employees-whose-manager-left-the-company/description/?envType=study-plan-v2&envId=top-sql-50
+select employee_id 
+from Employees
+where salary < 30000
+and manager_id not in (select employee_id from Employees)
+order by employee_id;
+
+--EX10: https://datalemur.com/questions/duplicate-job-listings
+SELECT COUNT(DISTINCT company_id) AS duplicate_job_count
+FROM job_listings
+WHERE (title, description, company_id) IN (
+    SELECT title, description, company_id
+    FROM job_listings
+    GROUP BY title, description, company_id
+    HAVING COUNT(*) > 1)
+
+--EX11: https://leetcode.com/problems/movie-rating/?envType=study-plan-v2&envId=top-sql-50
+
+
+--EX12:https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends/?envType=study-plan-v2&envId=top-sql-50
+WITH all_ids AS
+(SELECT requester_id AS id
+FROM RequestAccepted
+UNION ALL
+SELECT accepter_id AS id
+FROM RequestAccepted)
+
+SELECT id, num
+FROM (SELECT id, COUNT(*) AS num FROM all_ids
+GROUP BY id) AS counts
+WHERE num = (SELECT MAX(num)
+FROM (SELECT COUNT(*) AS num FROM all_ids
+GROUP BY id) AS max_counts);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
