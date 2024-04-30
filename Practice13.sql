@@ -49,6 +49,19 @@ where b.liked_date IS NULL
 ORDER BY a.page_id ASC 
 
 --EX5: https://datalemur.com/questions/user-retention
+SELECT 
+  EXTRACT(MONTH FROM a.event_date) AS month,
+  COUNT(DISTINCT a.user_id) AS monthly_active_users
+FROM user_actions as a 
+WHERE EXISTS (
+  SELECT last_month.user_id
+  FROM user_actions AS last_month
+  WHERE last_month.user_id = a.user_id
+  AND EXTRACT(MONTH FROM last_month.event_date) = EXTRACT(MONTH FROM a.event_date - interval '1 month')
+)
+  AND EXTRACT(MONTH FROM a.event_date) = 7
+  AND EXTRACT(YEAR FROM a.event_date) = 2022
+GROUP BY EXTRACT(MONTH FROM a.event_date);
 
 
 --EX6: https://leetcode.com/problems/monthly-transactions-i/?envType=study-plan-v2&envId=top-sql-50
