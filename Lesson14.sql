@@ -68,6 +68,26 @@ JOIN category c ON c.category_id=b.category_id
 ORDER BY c.name 
 -- nếu đề bài KO phân nhóm theo gì cả thì bỏ 'PARTITION BY..'
 
+ --RANK: CHALLENGE: Query to return : tên KH, quốc gia và số lượng (COUNT) tt mà họ có 
+--Tạo bảng xếp hạng (RANK) những KH có doanh thu cao nhất cho mỗi quốc gia (phân cụm theo từng qg) 
+-- Lọc kq chỉ 3 KH hàng đầu của mỗi quốc gia
+WITH t AS 
+(SELECT a.first_name|| ' ' ||a.last_name AS full_name, d.country,
+COUNT (*) AS so_luong,
+--Tạo bảng xếp hạng những KH có doanh thu cao nhất cho mỗi quốc gia 
+SUM (e.amount) AS amount,
+RANK() OVER(PARTITION BY d.country ORDER BY SUM(e.amount) DESC) AS stt
+FROM customer a 
+JOIN address b ON a.address_id=b.address_id
+JOIN public.city c ON c.city_id=b.city_id
+JOIN public.country d ON d.country_id=c.country_id
+JOIN public.payment e ON e.customer_id=a.customer_id
+GROUP BY a.first_name|| ' ' ||a.last_name, d.country)  
+-- Lọc kq chỉ 3 KH hàng đầu của mỗi quốc gia
+SELECT * FROM t
+WHERE t.stt<=3
+ 
+
 --FIRST VALUE
 --số tiền tt cho đơn hàng đầu tiên và gần đây nhất của từng KH 
 SELECT * FROM 
@@ -103,18 +123,35 @@ FROM payment
  
 --LAG (): Thêm dòng dữ liệu có giá trị trước đó 
 SELECT customer_id, payment_date, amount,
-LAG(amount) OVER(PARTITION BY customer_id ORDER BY payment_date) AS next_amount,
-LAG(payment_date) OVER(PARTITION BY customer_id ORDER BY payment_date) AS next_payment_date,
+LAG(amount) OVER(PARTITION BY customer_id ORDER BY payment_date) AS previous_amount,
+LAG(payment_date) OVER(PARTITION BY customer_id ORDER BY payment_date) AS previous_payment_date,
 amount- (LAG(amount) OVER(PARTITION BY customer_id ORDER BY payment_date) )
 FROM payment
 
 --Nếu KO CẦN gom nhóm THEO CHIÊU CHÍ nào cả 
 --theo từng ngày sớ tiền chênh lệch giữa các lần tt là bn 
-SELECT customer_id, payment_date, amount,
+SELECT payment_date, amount,
 LAG(amount) OVER(ORDER BY payment_date) AS next_amount,
 LAG(payment_date) OVER(ORDER BY payment_date) AS next_payment_date,
 amount- (LAG(amount) OVER(ORDER BY payment_date) )
 FROM payment
+
+--CHALLENGE: Query to return : doanh thu trong ngày và doanh thu của ngày hôm trước
+-- tính % tăng trưởng so với ngày hôm trước 
+with twt_main_payment as 
+(SELECT 
+date(payment_date) as payment_date,
+SUM(amount) as amount 
+FROM payment 
+GROUP BY date(payment_date) )
+SELECT payment_date,
+amount,
+LAG(payment_date) OVER(ORDER BY payment_date) as previous_payment_date,
+LAG(amount) OVER(ORDER BY payment_date) as previous_amount,
+-- tính % tăng trưởng so với ngày hôm trước 
+ROUND((amount-LAG(amount) OVER(ORDER BY payment_date))
+/LAG(amount) OVER(ORDER BY payment_date) *100,2) as precent_diff
+FROM twt_main_payment;
 
 
 
