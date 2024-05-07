@@ -49,12 +49,7 @@ ORDER BY transaction_date;
 
 --HARD: EX5: https://datalemur.com/questions/rolling-average-tweets
 
-SELECT user_id, tweet_date,
-ROUND(AVG(tweet_count) OVER (PARTITION BY user_id 
-ORDER BY tweet_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2)  
-AS rolling_avg_3d
-FROM tweets
-ORDER BY user_id, tweet_date;
+
 
 --EX7: https://datalemur.com/questions/sql-highest-grossing
 
@@ -81,19 +76,16 @@ ORDER BY category, ranking;
 --HARD -EX6: https://datalemur.com/questions/repeated-payments
  
 SELECT COUNT(*) AS payment_count
-FROM (
-SELECT t1.transaction_id FROM transactions t1
+FROM (SELECT t1.transaction_id FROM transactions t1
 JOIN transactions t2 ON t1.merchant_id = t2.merchant_id
 AND t1.credit_card_id = t2.credit_card_id
 AND t1.amount = t2.amount
 AND ABS(EXTRACT(EPOCH FROM (t1.transaction_timestamp - t2.transaction_timestamp)) / 60) <= 10
-WHERE t1.transaction_id < t2.transaction_id
-) AS repeated_payments;
+WHERE t1.transaction_id < t2.transaction_id) AS repeated_payments;
 
 --EX8: https://datalemur.com/questions/top-fans-rank
-WITH top_10_cte AS (SELECT artists.artist_name,
-DENSE_RANK() OVER (
-      ORDER BY COUNT(songs.song_id) DESC) AS artist_rank
+WITH t AS (SELECT artists.artist_name,
+DENSE_RANK() OVER (ORDER BY COUNT(songs.song_id) DESC) AS artist_rank
 FROM artists
 INNER JOIN songs ON artists.artist_id = songs.artist_id
 INNER JOIN global_song_rank AS ranking ON songs.song_id = ranking.song_id
@@ -101,7 +93,7 @@ WHERE ranking.rank <= 10
 GROUP BY artists.artist_name)
 
 SELECT artist_name, artist_rank
-FROM top_10_cte
+FROM t
 WHERE artist_rank <= 5;
 
 
