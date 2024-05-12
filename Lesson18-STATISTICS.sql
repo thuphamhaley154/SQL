@@ -141,7 +141,7 @@ DELETE FROM user_data
 WHERE users in (SELECT users FROM twt_outlier); 
 
 
-
+IV/ 
 	
 	
 	
