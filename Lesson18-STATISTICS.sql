@@ -82,6 +82,16 @@ Z-score
 
 III/ Phương pháp tìm OUTLIER
 
+1. Sd Boxplot: sd Quartile (Q1,Q2,Q3)
+
+OUTLIER-- Min(Q1-1.5*IQR) ---Q1 ---median --- Q3 --- MAX(Q3+1.5*IQR) --OUTLIER 
+ (IQR=Q3-Q1)
+Gtri nào nằm ngoài MIN-MAXlaf OUTLIER 
+
+
+2. Sd Z-score = (X-TB)/SD 
+|Z|>3 Loại 
+|Z|>2 cân nhắc, tùy trương hợp 
 
 SELECT * FROM user_data
 --- sd Boxplot/IQR tìm ra OUTLIER
