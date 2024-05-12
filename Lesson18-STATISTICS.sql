@@ -83,6 +83,59 @@ Z-score
 III/ Phương pháp tìm OUTLIER
 
 
+SELECT * FROM user_data
+--- sd Boxplot/IQR tìm ra OUTLIER
+--B1: Tính: Q1, Q3, IQR
+--B2: xác đinh MIN=Q1-1.5*IQR; MAX= Q3+1.5*IQR
+WITH  twt_minmax_value as 
+(SELECT Q1-1.5*IQR AS min_value,
+Q3+1.5*IQR AS max_value
+FROM (SELECT 
+percentile_cont(0.25) WITHIN  GROUP(ORDER BY users) AS Q1,
+percentile_cont(0.75) WITHIN  GROUP(ORDER BY users) AS Q3,
+percentile_cont(0.75) WITHIN  GROUP(ORDER BY users) - percentile_cont(0.25) WITHIN  GROUP(ORDER BY users) AS IQR  
+FROM user_data) AS a)
+--B3: xác định outlier <min OR  >max 
+SELECT * FROM user_data 
+WHERE users< (select min_value FROM twt_minmax_value)
+OR users>(SELECT max_value FROM twt_minmax_value)
+
+-- CÁCH 2: sd Z-SCORE = (users-avg)/sd
+SELECT AVG(users),
+stddev(users)
+FROM user_data,
+
+WITH cte AS 
+(SELECT data_date, users, 
+(SELECT AVG(users)
+FROM user_data) AS avg,
+(SELECT stddev(users)
+FROM user_data) as stddev
+FROM user_data)
+
+, twt_outlier as(
+SELECT data_date, users, (users-avg)/stddev as z_score 
+FROM cte 
+WHERE abs((users-avg)/stddev )>3)
+
+--để xử lý outlier: 1 xóa, 2 thay bằng gtri mới:vd: gtri TB 
+UPDATE user_data
+SET USERS=(SELECT AVG(users)
+FROM user_data)
+WHERE USERS IN (SELECT users FROM twt_outlier)
+
+
+
+--C2: xóa nó
+DELETE FROM user_data
+WHERE users in (SELECT users FROM twt_outlier); 
+
+
+
+	
+	
+	
+	
 
 
 
