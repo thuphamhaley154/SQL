@@ -1,9 +1,9 @@
 --BASIC STATISTICS & DETECT OUTLINER
 
-/* 1. Các khái niệm cơ bản trong thống kê
-2. Phân phối chuẩn
+/* I. Các khái niệm cơ bản trong thống kê
+II. Phân phối chuẩn
 3. Z-score
-4. Ứng dụngt tìm và xử lí dữ liệu ngoại lai (OUTLINER) */
+4. Ứng dụngt tìm và xử lí dữ liệu ngoại lai (OUTLIER) */
 
 /* 1. Thống kê mô tả với Thống kê suy luận
 1. Thống kê mô tả : trình bày kq của mk dưới dạng table, biểu đồ, dashboard từ tập dữ liệ ban đầu để đưa ra 1 kq nào 
@@ -38,7 +38,65 @@ Cách tìm số trung vị:
 
 
 
-4. Khoảng, Phương sai, Độ lệch chuẩn */
+4. Khoảng (Range), Phương sai(Variance-thước đo độ phân tán), Độ lệch chuẩn (SD)
+đo Độ phân tán: Tb các khoảng cách, sự cách xa nhau hơn hay gần hơn. 
+- Phương sai:
+σ mũ 2 : phương sai tổng thể = (TỔNG (các gtri quan sát trong tổng thể - μ gtri TB của tổng thể) ) / Cỡ mẫu của tổng thể (số qsat của tổng thể) 
+s mũ 2 : phương sai mẫu = (TỔNG (các gtri quan sát trong Mẫu - X gtri TB của Mẫu) ) / Cỡ mẫu của Mẫu(số qsat của mẫu)
+- Độ lệch chuẩn: căn bậc hai của (Phương sai)
+- Khoảng: sự khác biệt gtri quan sát Lớn nhất Và Nhỏ nhất
+  + Khoảng phân vị: 
+    - IQR: hiệu số giữa phân vị thứ 3 (Q3=75%) và phân vị thứ nhất (Q1=25%)
+    - Phân vị thứ 2 (Q2=50%), trung vị)
+  + Percentile ( Bách phân vị): thứ p là data mà tại đó p% data nhỏ hơn và (100-p)% data lớn hơn
+    Percentile thứ 50 là trung vị
+    Cách tìm: percentile thứ p
+              - xếp từ nhỏ --> lớn
+              - nhân p% với số lượng số và làm tròn lên số nguyên Lớn nhất
+              - Đếm từ trái sang phải tìm số nguyên
+  + Quartile ( tứ phân vị) : là các vtri Q1, Q2,Q3 
+    Q1: Percentile thứ 25
+    Q2: Percentile thứ 50 (trung vị) 
+    Q3: Percentile thứ 75 
+    Khoảng Tứ phân vị (Interquartile Range (IQR)): IQR=Q3-Q1
+
+BOX Plot: tính Quartile Q1(25) , Q2(50), Q3(75)  
+
+
+II/ Phân phối chuẩn (Normal Distribution) 
+- là sự phân bố dữ liệu mà ở đó gtri tập trung nhiều nhất ở khoảng giữa và cac gtri còn lại rải đều đối xứng về phía các cực trị 
+- Đặc điểm: có tính đối xứng; trung bình, trung vị, yếu vị ở cùng 1 điểm 
+- quy tăc 3σ: sd . Đo lường dựa vào Độ lệch chuẩn
+
+Z-score 
+- Chuẩn hóa: đưa cac sgtri của quan sát khác nhau về cùng 1 thang điểm
+- Điểm Z: là pp chuẩn hóa = cách chuyển gtri ban đầu sang thang điểm ĐỘ lêch chuẩn
+      z=(gtri qsat X-TB )/ SD 
+  Điểm Z: - dùng dể tính % của phân vị
+          - so sánh 2 quan sát có thang điểm khác nhau
+          - xác định gtri ngoại lai
+  web chuyển đổi điểm Z: https://measuringu.com/calculators/pcalcz/
+                       quy tắc; 68, 95, 99.7. Tức (-1;1): gtri 68%, (-2;2), (-3,3) 
+
+
+
+III/ Phương pháp tìm OUTLIER
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
 
 
 
